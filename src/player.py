@@ -1,12 +1,14 @@
 import pygame
+from object import Object
 
-class Player:
+class Player(Object):
     SPEED = 200
 
-    def __init__(self, window):
+    def __init__(self, window, keys):
         self.window = window
 
         self.velocity = [0, 0]
+        self.keys = keys
         self.initSprite()
 
     def initSprite(self):
@@ -21,22 +23,22 @@ class Player:
 
     def eventManager(self, event):
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_UP:
+            if event.key == self.keys["up"]:
                 self.velocity[1] += -1
-            if event.key == pygame.K_DOWN:
+            if event.key == self.keys["down"]:
                 self.velocity[1] += 1
-            if event.key == pygame.K_LEFT:
+            if event.key == self.keys["left"]:
                 self.velocity[0] += -1
-            if event.key == pygame.K_RIGHT:
+            if event.key == self.keys["right"]:
                 self.velocity[0] += 1
         if event.type == pygame.KEYUP:
-            if event.key == pygame.K_UP:
+            if event.key == self.keys["up"]:
                 self.velocity[1] -= -1
-            if event.key == pygame.K_DOWN:
+            if event.key == self.keys["down"]:
                 self.velocity[1] -= 1
-            if event.key == pygame.K_LEFT:
+            if event.key == self.keys["left"]:
                 self.velocity[0] -= -1
-            if event.key == pygame.K_RIGHT:
+            if event.key == self.keys["right"]:
                 self.velocity[0] -= 1
 
 # class Player(pygame.sprite.Sprite):
