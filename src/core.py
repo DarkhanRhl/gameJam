@@ -1,6 +1,6 @@
 import pygame
 from player import Player
-from wall import Wall
+# from wall import Wall
 
 class Core:
     FPS = 60
