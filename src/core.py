@@ -1,6 +1,6 @@
 import pygame
 from player import Player
-# from wall import Wall
+from wall import Wall
 
 class Core:
     FPS = 60
@@ -21,6 +21,9 @@ class Core:
         "right": pygame.K_d
     }
 
+    POS_WALL_1 = [[0,30], [0, 150], [0, 270], [0, 390], [0, 510], [0, 630]]
+    POS_WALL_2 = [[1048 ,30], [1048, 150], [1048, 270], [1048, 390], [1048, 510], [1048, 630]]
+
     def __init__(self):
         pygame.init()
         self.window = pygame.display.set_mode((self.LENGTH, self.HEIGHT))
@@ -30,6 +33,9 @@ class Core:
         self.objects = []
         self.objects.append(Player(self.window, self.PLAYER1_KEYS))
         self.objects.append(Player(self.window, self.PLAYER2_KEYS))
+        self.objects.append(Wall(self.window, self.POS_WALL_1))
+        self.objects.append(Wall(self.window, self.POS_WALL_2))
+
 
     def eventManager(self):
         for event in pygame.event.get():
