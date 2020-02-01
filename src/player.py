@@ -1,27 +1,64 @@
 import pygame
+import operator
 from object import Object
 
 class Player(Object):
     SPEED = 200
+    STUNT_DURATION = 3
 
-    def __init__(self, window, keys):
-        self.window = window
+    def __init__(self, core, keys, name, color):
+        self.core = core
+        self.keys = keys
+        self.name = name
+        self.color = color
 
         self.velocity = [0, 0]
-        self.keys = keys
+        self.action = False
+        self.hold = None
+        self.stunt = 0
+
         self.initSprite()
 
     def initSprite(self):
         self.image = pygame.Surface((32, 32))
-        self.image.fill((255, 255, 255))
+        self.image.fill(self.color)
         self.rect = self.image.get_rect()
 
+    def checkCollision(self, otherRect):
+        return self.rect.colliderect(otherRect)
+
+    def checkAction(self):
+        players = self.core.getObjectsByType(Player)
+        for player in players:
+            if player != self:
+                if self.checkCollision(player.rect):
+                    if player.hold:
+                        player.hold = None
+                    else:
+                        player.stunt = self.STUNT_DURATION
+
     def update(self, dt):
-        move = [v * self.SPEED * dt for v in self.velocity]
-        self.rect.move_ip(*move)
-        self.window.blit(self.image, self.rect)
+        if self.action:
+            self.checkAction()
+            self.action = False
+
+        if self.stunt == 0:
+            move = [v * self.SPEED * dt for v in self.velocity]
+            self.rect.move_ip(*move)
+        else:
+            self.stunt -= self.stunt if dt > self.stunt else dt
+            fade = self.stunt * (200 / self.STUNT_DURATION)
+            newColor = (
+                0 if self.color[0] == 0 else fade,
+                0 if self.color[1] == 0 else fade,
+                0 if self.color[2] == 0 else fade)
+            self.image.fill(tuple(map(operator.sub, self.color, newColor)))
+
+        self.core.window.blit(self.image, self.rect)
 
     def eventManager(self, event):
+        if self.stunt != 0:
+            return
         if event.type == pygame.KEYDOWN:
             if event.key == self.keys["up"]:
                 self.velocity[1] += -1
@@ -31,6 +68,8 @@ class Player(Object):
                 self.velocity[0] += -1
             if event.key == self.keys["right"]:
                 self.velocity[0] += 1
+            if event.key == self.keys["action"]:
+                self.action = True
         if event.type == pygame.KEYUP:
             if event.key == self.keys["up"]:
                 self.velocity[1] -= -1
@@ -40,47 +79,3 @@ class Player(Object):
                 self.velocity[0] -= -1
             if event.key == self.keys["right"]:
                 self.velocity[0] -= 1
-
-# class Player(pygame.sprite.Sprite):
-#     def __init__(self):
-#         super().__init__()
-#         self.image = pygame.Surface((32, 32))
-#         self.image.fill(WHITE)
-#         self.rect = self.image.get_rect()  # Get rect of some size as 'image'.
-#         self.velocity = [0, 0]
-
-#     def update(self):
-#         self.rect.move_ip(*self.velocity)
-
-
-# player = Player()
-# running = True
-# while running:
-#     dt = clock.tick(FPS) / 1000
-#     window.fill(BLACK)
-
-#     for event in pygame.event.get():
-#         if event.type == pygame.QUIT:
-#             running = False
-#         elif event.type == pygame.KEYDOWN:
-#             if event.key == pygame.K_w:
-#                 player.velocity[1] = -200 * dt
-#             elif event.key == pygame.K_s:
-#                 player.velocity[1] = 200 * dt
-#             elif event.key == pygame.K_a:
-#                 player.velocity[0] = -200 * dt
-#             elif event.key == pygame.K_d:
-#                 player.velocity[0] = 200 * dt
-#         elif event.type == pygame.KEYUP:
-#             if event.key == pygame.K_w or event.key == pygame.K_s:
-#                 player.velocity[1] = 0
-#             elif event.key == pygame.K_a or event.key == pygame.K_d:
-#                 player.velocity[0] = 0
-
-#     player.update()
-
-#     window.blit(player.image, player.rect)
-#     pygame.display.update()  # Or pygame.display.flip()
-
-# print("Exited the game loop. Game will quit...")
-# quit()  # Not actually necessary since the script will exit anyway.
