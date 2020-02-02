@@ -67,7 +67,12 @@ class Core:
         # self.objects.append(Wall(self.window, self.POS_WALL_2))
 
         # self.objects.append(Pieces(self.window, self.POS_PIECES))
-        self.objects.append(Piece((500, 400), self))
+        self.objects.append(Piece("vertical", (200, 400), self))
+        self.objects.append(Piece("horizontal", (300, 400), self))
+        self.objects.append(Piece("square", (400, 400), self))
+        self.objects.append(Piece("t-shape", (500, 400), self))
+        self.objects.append(Piece("l-left", (600, 400), self))
+        self.objects.append(Piece("l-right", (700, 400), self))
 
     def eventManager(self):
         for event in pygame.event.get():

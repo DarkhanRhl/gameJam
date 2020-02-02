@@ -2,14 +2,14 @@ import pygame
 from object import Object
 
 class Piece(Object):
-    def __init__(self, pos, core):
+    def __init__(self, name, pos, core):
+        self.name = name
         self.core = core
 
         self.initSprite(pos)
 
     def initSprite(self, pos):
-        self.image = pygame.Surface((16, 16))
-        self.image.fill((255, 255, 255))
+        self.image = pygame.image.load("assets/pieces/" + self.name + ".png").convert()
         self.rect = self.image.get_rect()
         self.rect.move_ip(*pos)
 
