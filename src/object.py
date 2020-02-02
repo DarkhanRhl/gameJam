@@ -1,6 +1,6 @@
 class Object:
-    def eventManager(self):
+    def eventManager(self, event):
         pass
 
-    def update(self):
+    def update(self, dt):
         pass

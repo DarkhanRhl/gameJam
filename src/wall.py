@@ -1,6 +1,7 @@
 import pygame
+from object import Object
 
-class Wall:
+class Wall(Object):
     def __init__(self, window, pos):
         self.window = window
         self.wallParts = []
@@ -30,8 +31,4 @@ class Wall:
     def update(self, dt):
         for w in self.wallParts:
             self.window.blit(self.image, w)
-    def eventManager(self, event):
-        # if event.type == pygame.KEYDOWN:
-        #     print("dans event manager")
-        i = 0
-        
+
