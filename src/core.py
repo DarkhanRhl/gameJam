@@ -1,19 +1,18 @@
 import pygame
 from object import Object
 from player import Player
+from block import Block
+from wall import Wall
 
-class Toto(Object):
-    def __init__(self, value):
-        self.value = value
-
-    def display(self):
-        print(self.value)
 
 class Core:
     FPS = 60
-    LENGTH = 1080
-    HEIGHT = 720
+    WINDOW_LENGTH = 1080
+    WINDOW_HEIGHT = 720
 
+    PLAYER1_NAME = "Blue"
+    PLAYER1_START_POS = (WINDOW_LENGTH / 2 - 100, WINDOW_HEIGHT / 2)
+    PLAYER1_COLOR = (0, 0, 255)
     PLAYER1_KEYS = {
         "up": pygame.K_UP,
         "down": pygame.K_DOWN,
@@ -22,6 +21,8 @@ class Core:
         "action": pygame.K_RETURN
     }
 
+    PLAYER2_NAME = "Red"
+    PLAYER2_START_POS = (WINDOW_LENGTH / 2 + 100, WINDOW_HEIGHT / 2)
     PLAYER2_KEYS = {
         "up": pygame.K_z,
         "down": pygame.K_s,
@@ -29,18 +30,27 @@ class Core:
         "right": pygame.K_d,
         "action": pygame.K_SPACE
     }
+    PLAYER2_COLOR = (255, 0, 0)
+
+    POS_WALL_1 = [[0, 30], [0, 150], [0, 270], [0, 390], [0, 510], [0, 630]]
+    POS_WALL_2 = [[1048, 30], [1048, 150], [1048, 270],
+                  [1048, 390], [1048, 510], [1048, 630]]
 
     def __init__(self):
         pygame.init()
-        self.window = pygame.display.set_mode((self.LENGTH, self.HEIGHT))
+        self.window = pygame.display.set_mode(
+            (self.WINDOW_LENGTH, self.WINDOW_HEIGHT))
         self.clock = pygame.time.Clock()
         self.running = True
 
         self.objects = []
-        self.objects.append(Player(self, self.PLAYER1_KEYS, "player 1", (255, 0, 0)))
-        self.objects.append(Player(self, self.PLAYER2_KEYS, "player 2", (0, 0, 255)))
-        self.objects.append(Toto("toto"))
-        self.objects.append(Toto("tata"))
+        self.objects.append(Player(self.PLAYER1_NAME, self.PLAYER1_START_POS,
+                                   self.PLAYER1_KEYS, self.PLAYER1_COLOR, self))
+        self.objects.append(Player(self.PLAYER2_NAME, self.PLAYER2_START_POS,
+                                   self.PLAYER2_KEYS, self.PLAYER2_COLOR, self))
+        self.objects.append(Wall(self.window, self.POS_WALL_1))
+        self.objects.append(Wall(self.window, self.POS_WALL_2))
+        self.objects.append(Block(self))
 
     def eventManager(self):
         for event in pygame.event.get():
