@@ -49,6 +49,8 @@ class Core:
             object_.update(dt)
 
     def gameloop(self):
+        sound = pygame.mixer.Sound("assets/sound/flute.wav")
+        sound.play(loops=-1, maxtime=0, fade_ms=0)
         while self.running:
             dt = self.clock.tick(self.FPS) / 1000
             self.window.fill((0, 0, 0))

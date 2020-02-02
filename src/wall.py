@@ -31,6 +31,7 @@ class Wall:
         for w in self.wallParts:
             self.window.blit(self.image, w)
     def eventManager(self, event):
-        if event.type == pygame.KEYDOWN:
-            print("dans event manager")
+        # if event.type == pygame.KEYDOWN:
+        #     print("dans event manager")
+        i = 0
         
