@@ -1,10 +1,15 @@
 from twisted.internet.protocol import DatagramProtocol
 from twisted.internet import reactor
+from threading import Thread
 
 class Network(DatagramProtocol):  
 
     def __init__(self, callback):
         # print('INIT')
+        reactor.listenUDP(8000, self)
+        thread = Thread(target=reactor.run, args=(False,))
+        thread.daemon = True
+        thread.start()
         self.callback = callback
 
     def startProtocol(self):
