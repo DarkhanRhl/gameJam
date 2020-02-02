@@ -1,5 +1,10 @@
 import pygame
+import sys
 from player import Player
+from playerNetwork import PlayerNetwork
+from network import Network
+from twisted.internet import reactor
+from threading import Thread
 # from wall import Wall
 
 class Core:
@@ -28,8 +33,17 @@ class Core:
         self.running = True
 
         self.objects = []
-        self.objects.append(Player(self.window, self.PLAYER1_KEYS))
-        self.objects.append(Player(self.window, self.PLAYER2_KEYS))
+
+        playerNetwork = PlayerNetwork(self.window)
+        self.objects.append(playerNetwork)
+        self.network = Network(playerNetwork.receiveInsctruction)
+        reactor.listenUDP(8000, self.network)
+        thread = Thread(target=reactor.run, args=(False,))
+        thread.start()
+
+        # self.objects.append(Player(self.window, self.PLAYER1_KEYS, self.network.sendDatagram))
+        self.objects.append(Player(self.window, self.PLAYER2_KEYS, self.network.sendDatagram))
+
 
     def eventManager(self):
         for event in pygame.event.get():
@@ -51,3 +65,4 @@ class Core:
             self.update(dt)
 
             pygame.display.flip()
+        reactor.stop()

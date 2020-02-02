@@ -4,8 +4,9 @@ from object import Object
 class Player(Object):
     SPEED = 200
 
-    def __init__(self, window, keys):
+    def __init__(self, window, keys, sendDatagram):
         self.window = window
+        self.sendDatagram = sendDatagram
 
         self.velocity = [0, 0]
         self.keys = keys
@@ -24,21 +25,29 @@ class Player(Object):
     def eventManager(self, event):
         if event.type == pygame.KEYDOWN:
             if event.key == self.keys["up"]:
+                self.sendDatagram("101")
                 self.velocity[1] += -1
             if event.key == self.keys["down"]:
+                self.sendDatagram("102")
                 self.velocity[1] += 1
             if event.key == self.keys["left"]:
+                self.sendDatagram("103")
                 self.velocity[0] += -1
             if event.key == self.keys["right"]:
+                self.sendDatagram("104")
                 self.velocity[0] += 1
         if event.type == pygame.KEYUP:
             if event.key == self.keys["up"]:
+                self.sendDatagram("111")
                 self.velocity[1] -= -1
             if event.key == self.keys["down"]:
+                self.sendDatagram("112")
                 self.velocity[1] -= 1
             if event.key == self.keys["left"]:
+                self.sendDatagram("113")
                 self.velocity[0] -= -1
             if event.key == self.keys["right"]:
+                self.sendDatagram("114")
                 self.velocity[0] -= 1
 
 # class Player(pygame.sprite.Sprite):
