@@ -29,7 +29,7 @@ class Player(Object):
         self.initSprite(pos)
 
     def initSprite(self, pos):
-        self.image = pygame.Surface((32, 32))
+        self.image = pygame.Surface((50, 50))
         self.image.fill(self.color)
         self.rect = self.image.get_rect()
         self.rect.move_ip(*pos)
