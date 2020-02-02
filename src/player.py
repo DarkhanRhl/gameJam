@@ -6,7 +6,7 @@ from block import Block
 
 class Player(Object):
     SPEED = 250
-    SPEED_HOLDING_PERCENT = 0.7
+    SPEED_HOLDING_PERCENT = 0.85
 
     DASH_DURATION = 0.3
     DASH_SPEED_BONUS = 500
@@ -46,16 +46,26 @@ class Player(Object):
                         player.hold = None
                     if player.stunt == 0:
                         player.stunt = self.STUNT_DURATION
+                    return True
+        return False
 
     def checkBlockAction(self):
         blocks = self.core.getObjectsByType(Block)
         for block in blocks:
             if self.checkCollision(block.rect):
                 self.hold = block
+                return True
+        return False
 
     def checkAction(self):
+        if self.hold:
+            self.hold = None
+            return
+
         willDash = True
-        if self.checkPlayerAction() or self.checkBlockAction():
+        if self.checkBlockAction():
+            willDash = False
+        if self.checkPlayerAction():
             willDash = False
         if willDash and not self.hold:
             self.dash = self.DASH_SPEED_BONUS

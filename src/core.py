@@ -24,9 +24,9 @@ class Core:
     PLAYER2_NAME = "Red"
     PLAYER2_START_POS = (WINDOW_LENGTH / 2 + 100, WINDOW_HEIGHT / 2)
     PLAYER2_KEYS = {
-        "up": pygame.K_z,
+        "up": pygame.K_w,
         "down": pygame.K_s,
-        "left": pygame.K_q,
+        "left": pygame.K_a,
         "right": pygame.K_d,
         "action": pygame.K_SPACE
     }
