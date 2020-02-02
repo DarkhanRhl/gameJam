@@ -1,11 +1,11 @@
 import pygame
 
-SQUARE = "assets/pieces/carree_sans_bordure.png"
-L_RIGHT = "assets/pieces/l_cote-droit_sans_bordure.png"
-L_LEFT = "assets/pieces/l_cote-gauche_sans_bordure.png"
-T = "assets/pieces/t_sans_bordure.png"
-STRAIGHT_LINE = "assets/pieces/trait-droit_sans_bordure.png"
-HORIZONTAL_LINE = "assets/pieces/trait-horizon_sans_bordure.png"
+SQUARE = "assets/pieces/square.png"
+L_RIGHT = "assets/pieces/l-right.png"
+L_LEFT = "assets/pieces/l-left.png"
+T = "assets/pieces/t-shape.png"
+STRAIGHT_LINE = "assets/pieces/vertical.png"
+HORIZONTAL_LINE = "assets/pieces/horizontal.png"
 
 class Pieces:
     def __init__(self, window, pos):

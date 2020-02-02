@@ -66,9 +66,11 @@ class Core:
         # self.objects.append(Wall(self.window, self.POS_WALL_1))
         # self.objects.append(Wall(self.window, self.POS_WALL_2))
 
-        # self.objects.append(Pieces(self.window, self.POS_PIECES))
+        self.objects.append(Pieces(self.window, self.POS_PIECES))
         self.objects.append(Piece((500, 400), self))
 
+    # def piecesPosRandomizer():
+        
     def eventManager(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
