@@ -8,6 +8,10 @@ from wall import Wall
 
 
 class Player(Object):
+    IA = "IA"
+    NETWORK = "NETWORK"
+    REAL = "REAL"
+
     SPEED = 300
     SPEED_HOLDING_PERCENT = 0.85
 
@@ -18,9 +22,22 @@ class Player(Object):
     STUNT_DURATION = 1.5
     STUNT_FADE_INTENSITY = 150
 
+    # NETWORK
+    # def __init__(self, playerType, name, pos, keys, color, core, sendDataFunc):
+    
+    # LOCAL
     def __init__(self, name, pos, keys, color, core):
         self.name = name
+
+        # NETWORK
+        # self.playerType = playerType
+        # if (playerType == self.REAL):
+        #     self.keys = keys
+        #     self.sendDataFunc = sendDataFunc
+
+        # LOCAL
         self.keys = keys
+
         self.color = color
         self.core = core
 
@@ -125,24 +142,45 @@ class Player(Object):
 
         self.core.window.blit(self.image, self.rect)
 
+    def networkManager(self, datagram):
+        print("OKKKK")
+        if datagram[1] == "0":
+            self.velocity[0] = int(datagram[2:])
+        if datagram[1] == "1":
+            self.velocity[1] = int(datagram[2:])
+        if datagram[1] == "2" and self.stunt == 0:
+            self.checkAction()
+
     def eventManager(self, event):
+        # NETWORK
+        # if (self.playerType != self.REAL):
+        #     return
         if event.type == pygame.KEYDOWN:
             if event.key == self.keys["left"]:
                 self.velocity[0] += -1
+                # self.sendDataFunc("10" + str(self.velocity[0]))
             if event.key == self.keys["right"]:
                 self.velocity[0] += 1
+                # self.sendDataFunc("10" + str(self.velocity[0]))
             if event.key == self.keys["up"]:
                 self.velocity[1] += -1
+                # self.sendDataFunc("11" + str(self.velocity[1]))
             if event.key == self.keys["down"]:
                 self.velocity[1] += 1
+                # self.sendDataFunc("11" + str(self.velocity[1]))
             if event.key == self.keys["action"] and self.stunt == 0:
                 self.checkAction()
+                # self.sendDataFunc("12")
         if event.type == pygame.KEYUP:
             if event.key == self.keys["left"]:
                 self.velocity[0] -= -1
+                # self.sendDataFunc("10" + str(self.velocity[0]))
             if event.key == self.keys["right"]:
                 self.velocity[0] -= 1
+                # self.sendDataFunc("10" + str(self.velocity[0]))
             if event.key == self.keys["up"]:
                 self.velocity[1] -= -1
+                # self.sendDataFunc("11" + str(self.velocity[1]))
             if event.key == self.keys["down"]:
                 self.velocity[1] -= 1
+                # self.sendDataFunc("11" + str(self.velocity[1]))
