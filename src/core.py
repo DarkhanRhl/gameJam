@@ -7,6 +7,7 @@ from player import Player
 from piece import Piece
 from wall import Wall
 from pieces import Pieces
+from network import Network
 
 pygame.init()
 
@@ -67,12 +68,15 @@ class Core:
             (self.WINDOW_LENGTH, self.WINDOW_HEIGHT))
         self.clock = pygame.time.Clock()
         self.running = True
+        self.network = Network(self.networkManager)
 
         self.objects = []
-        self.objects.append(Player(self.PLAYER1_NAME, self.PLAYER1_START_POS,
-                                   self.PLAYER1_KEYS, self.PLAYER1_COLOR, self))
-        self.objects.append(Player(self.PLAYER2_NAME, self.PLAYER2_START_POS,
-                                   self.PLAYER2_KEYS, self.PLAYER2_COLOR, self))
+        self.objects.append(Player(Player.REAL, self.PLAYER1_NAME, self.PLAYER1_START_POS,
+                                   self.PLAYER1_KEYS, self.PLAYER1_COLOR, self, self.network.sendDatagram))
+        self.objects.append(Player(Player.REAL, self.PLAYER2_NAME, self.PLAYER2_START_POS,
+                                   self.PLAYER2_KEYS, self.PLAYER2_COLOR, self, self.network.sendDatagram))
+        # self.objects.append(Player(Player.NETWORK, self.PLAYER2_NAME, self.PLAYER2_START_POS,
+        #                            None, self.PLAYER2_COLOR, self, None))
         # self.objects.append(Wall(self.window, self.POS_WALL_1))
         # self.objects.append(Wall(self.window, self.POS_WALL_2))
 
@@ -85,6 +89,10 @@ class Core:
         # self.objects.append(Piece("l-right", (700, 400), self))
         self.piecesName = []
         self.generatePieces()
+
+    def networkManager(self, datagram):
+        if (datagram[0] == '1'):
+            self.getObjectsByType(Player)[1]
 
     def generateRandomPiecePosition(self):
         x = random.randint(self.WINDOW_LENGTH / 2 - (self.WINDOW_LENGTH * self.PIECE_SPAWN_RANGE_X_PERCENT),
