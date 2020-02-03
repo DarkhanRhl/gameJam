@@ -1,18 +1,21 @@
 import pygame
 import operator
+import utils
+
 from object import Object
 from piece import Piece
+from wall import Wall
 
 
 class Player(Object):
-    SPEED = 250
+    SPEED = 300
     SPEED_HOLDING_PERCENT = 0.85
 
     DASH_DURATION = 0.3
     DASH_SPEED_BONUS = 500
     DASH_COOLDOWN = 2
 
-    STUNT_DURATION = 0.5
+    STUNT_DURATION = 1.5
     STUNT_FADE_INTENSITY = 150
 
     def __init__(self, name, pos, keys, color, core):
@@ -36,22 +39,11 @@ class Player(Object):
         self.rect = self.image.get_rect()
         self.rect.move_ip(*pos)
 
-    def changeSpriteColor(self, color):
-        w, h = self.image.get_size()
-        r, g, b = color
-        for x in range(w):
-            for y in range(h):
-                a = self.image.get_at((x, y))[3]
-                self.image.set_at((x, y), pygame.Color(r, g, b, a))
-
-    def checkCollision(self, otherRect):
-        return self.rect.colliderect(otherRect)
-
     def checkPlayerAction(self):
         players = self.core.getObjectsByType(Player)
         for player in players:
             if player != self:
-                if self.checkCollision(player.rect):
+                if utils.checkCollision(self.rect, player.rect):
                     if player.hold:
                         player.hold = None
                     if player.stunt == 0:
@@ -62,12 +54,33 @@ class Player(Object):
     def checkBlockAction(self):
         blocks = self.core.getObjectsByType(Piece)
         for block in blocks:
-            if self.checkCollision(block.rect):
+            if utils.checkCollision(self.rect, block.rect):
                 self.hold = block
                 return True
         return False
 
+    def checkWallCollision(self, rectToCheck):
+        walls = self.core.getObjectsByType(Wall)
+        for wall in walls:
+            for part in wall.wallParts:
+                if utils.checkCollision(rectToCheck, part.rectPart):
+                    return part
+        return None
+
+    def checkWallPartAction(self):
+        partCollided = self.checkWallCollision(self.rect)
+        if partCollided != None and self.hold:
+            return partCollided.checkPutPiece(self.hold.name)
+        return None
+
     def checkAction(self):
+        wallPartCollided = self.checkWallPartAction()
+        if self.hold and wallPartCollided != None:
+            if wallPartCollided == True:
+                self.core.objects.remove(self.hold)
+                self.hold = None
+            return
+
         if self.hold:
             self.hold = None
             return
@@ -88,12 +101,19 @@ class Player(Object):
             0 if self.color[2] == 0 else fade)
         self.image.fill(tuple(map(operator.sub, self.color, newColor)))
 
+    def checkIfMove(self, move):
+        if (not self.checkWallCollision(self.rect)) or (self.checkWallCollision(self.rect) and not self.checkWallCollision(self.rect.move(*move))) or (self.rect.x == self.rect.x + move[0]):
+            return True
+        return False
+
     def update(self, dt):
         if self.stunt == 0:
             speed = self.SPEED * self.SPEED_HOLDING_PERCENT if self.hold else self.SPEED
             speed += self.dash if self.dash > 0 else 0
             move = [v * speed * dt for v in self.velocity]
-            self.rect.move_ip(*move)
+
+            if self.checkIfMove(move):
+                self.rect.move_ip(*move)
             self.dash -= self.DASH_SPEED_BONUS * (dt / self.DASH_DURATION)
         else:
             self.stunt -= self.stunt if dt > self.stunt else dt

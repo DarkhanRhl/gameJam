@@ -2,13 +2,11 @@ import os
 import random
 import time
 import pygame
+
 from object import Object
 from player import Player
 from piece import Piece
 from wall import Wall
-
-pygame.init()
-
 
 class Core:
     FPS = 60
@@ -43,10 +41,6 @@ class Core:
     PIECE_SPAWN_RANGE_X_PERCENT = 0.1
     PIECE_SPAWN_RANGE_Y_PERCENT = 0.45
 
-    POS_WALL_1 = [[0, 30], [0, 150], [0, 270], [0, 390], [0, 510], [0, 630]]
-    POS_WALL_2 = [[1048, 30], [1048, 150], [1048, 270],
-                  [1048, 390], [1048, 510], [1048, 630]]
-
     def __init__(self):
         random.seed(time.time())
         pygame.init()
@@ -55,16 +49,19 @@ class Core:
         self.clock = pygame.time.Clock()
         self.running = True
 
+        self.piecesName = []
         self.objects = []
+
         self.objects.append(Player(self.PLAYER1_NAME, self.PLAYER1_START_POS,
                                    self.PLAYER1_KEYS, self.PLAYER1_COLOR, self))
         self.objects.append(Player(self.PLAYER2_NAME, self.PLAYER2_START_POS,
                                    self.PLAYER2_KEYS, self.PLAYER2_COLOR, self))
-        # self.objects.append(Wall(self.window, self.POS_WALL_1))
-        # self.objects.append(Wall(self.window, self.POS_WALL_2))
         
-        self.piecesName = []
         self.generatePieces()
+        
+        self.objects.append(Wall("LEFT", self.piecesName, self))
+        self.objects.append(Wall("RIGHT", self.piecesName, self))
+
 
     def generateRandomPiecePosition(self):
         x = random.randint(self.WINDOW_LENGTH / 2 - (self.WINDOW_LENGTH * self.PIECE_SPAWN_RANGE_X_PERCENT),
@@ -81,11 +78,6 @@ class Core:
             name = self.piecesName[i]
             self.objects.append(
                 Piece(name, self.generateRandomPiecePosition(), self))
-            self.objects.append(
-                Piece(name, self.generateRandomPiecePosition(), self))
-
-        for i in range(self.NUMBER_PIECES - (self.NUMBER_WALL_HOLE * 2)):
-            name = self.piecesName[random.randint(0, len(self.piecesName) - 1)]
             self.objects.append(
                 Piece(name, self.generateRandomPiecePosition(), self))
 

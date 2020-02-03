@@ -5,7 +5,6 @@ class Piece(Object):
     def __init__(self, name, pos, core):
         self.name = name
         self.core = core
-
         self.initSprite(pos)
 
     def initSprite(self, pos):

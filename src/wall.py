@@ -1,34 +1,29 @@
 import pygame
+from random import randint
+
+from piece import Piece
 from object import Object
+from wallPart import WallPart
+
 
 class Wall(Object):
-    def __init__(self, window, pos):
-        self.window = window
-        self.wallParts = []
-        self.pos = pos
-        self.initSprite()
-        self.initWallPart()
-    
-    def initSprite(self):
-        self.image = pygame.Surface((32, 32))
-        self.image.fill((255, 255, 255))
-    
-    def initWallPart(self):
-        self.wallParts.append(self.image.get_rect())
-        self.wallParts.append(self.image.get_rect())
-        self.wallParts.append(self.image.get_rect())
-        self.wallParts.append(self.image.get_rect())
-        self.wallParts.append(self.image.get_rect())
-        self.wallParts.append(self.image.get_rect())
+    PART_LENGTH = 75
 
-        self.wallParts[0].move_ip(self.pos[0])
-        self.wallParts[1].move_ip(self.pos[1])
-        self.wallParts[2].move_ip(self.pos[2])
-        self.wallParts[3].move_ip(self.pos[3])
-        self.wallParts[4].move_ip(self.pos[4])
-        self.wallParts[5].move_ip(self.pos[5])
+    def __init__(self, side, piecesName, core):
+        self.core = core
+
+        self.wallParts = []
+        self.initWallPart(side, piecesName)
+
+    def initWallPart(self, side, piecesName):
+        partHeight = self.core.WINDOW_HEIGHT / len(piecesName)
+        for index, piece in enumerate(piecesName):
+            partPos = (0 if side == "LEFT" else self.core.WINDOW_LENGTH - self.PART_LENGTH,
+                       partHeight * index)
+            partSize = (self.PART_LENGTH, partHeight)
+            pieceRect = pygame.Rect(partPos, partSize)
+            self.wallParts.append(WallPart(piece, pieceRect, self.core))
 
     def update(self, dt):
-        for w in self.wallParts:
-            self.window.blit(self.image, w)
-
+        for part in self.wallParts:
+            part.update(dt)
