@@ -54,8 +54,8 @@ class Core:
     # 5 = barre horizontal
 
     POS_WALL_1 = [[0, 30], [0, 150], [0, 270], [0, 390], [0, 510], [0, 630]]
-    POS_WALL_2 = [[1048, 30], [1048, 150], [1048, 270],
-                  [1048, 390], [1048, 510], [1048, 630]]
+    POS_WALL_2 = [[1040, 30], [1040, 150], [1040, 270],
+                  [1040, 390], [1040, 510], [1040, 630]]
 
     #middle : 540|360
     POS_PIECES = [[540, 310], [570, 330], [540, 360], [610, 360], [600, 360], [570, 390],
@@ -77,8 +77,8 @@ class Core:
                                    self.PLAYER2_KEYS, self.PLAYER2_COLOR, self, self.network.sendDatagram))
         # self.objects.append(Player(Player.NETWORK, self.PLAYER2_NAME, self.PLAYER2_START_POS,
         #                            None, self.PLAYER2_COLOR, self, None))
-        # self.objects.append(Wall(self.window, self.POS_WALL_1))
-        # self.objects.append(Wall(self.window, self.POS_WALL_2))
+        self.objects.append(Wall(self.window, self.POS_WALL_1))
+        self.objects.append(Wall(self.window, self.POS_WALL_2))
 
         # self.objects.append(Pieces(self.window, self.POS_PIECES))
         # self.objects.append(Piece("vertical", (200, 400), self))
@@ -112,10 +112,10 @@ class Core:
             self.objects.append(
                 Piece(name, self.generateRandomPiecePosition(), self))
 
-        for i in range(self.NUMBER_PIECES - (self.NUMBER_WALL_HOLE * 2)):
-            name = self.piecesName[random.randint(0, len(self.piecesName) - 1)]
-            self.objects.append(
-                Piece(name, self.generateRandomPiecePosition(), self))
+        # for i in range(self.NUMBER_PIECES - (self.NUMBER_WALL_HOLE * 2)):
+        #     name = self.piecesName[random.randint(0, len(self.piecesName) - 1)]
+        #     self.objects.append(
+        #         Piece(name, self.generateRandomPiecePosition(), self))
 
     def eventManager(self):
         for event in pygame.event.get():

@@ -25,10 +25,6 @@ class Pieces:
             self.piecesSprite.append(pygame.image.load(STRAIGHT_LINE).convert())
             self.piecesSprite.append(pygame.image.load(HORIZONTAL_LINE).convert())
             i += 1
-        # for pi in self.piecesSprite:
-        #     self.rect.append(self.pi.get_rect())
-        # self.image = pygame.Surface((32, 32))
-        # self.image.fill((255, 255, 255))
         
     def update(self, dt):
         i = 0
