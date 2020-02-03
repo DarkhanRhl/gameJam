@@ -1,14 +1,15 @@
 import pygame
+from piece import Piece
 from object import Object
 from random import *
 
 
-SQUARE = "assets/pieces/square.png"
-L_RIGHT = "assets/pieces/l-right.png"
-L_LEFT = "assets/pieces/l-left.png"
-T = "assets/pieces/t-shape.png"
-STRAIGHT_LINE = "assets/pieces/vertical.png"
-HORIZONTAL_LINE = "assets/pieces/horizontal.png"
+SQUARE = "square"
+L_RIGHT = "l-right"
+L_LEFT = "l-left"
+T = "t-shape"
+VERTICAL = "vertical"
+HORIZONTAL = "horizontal"
 
 
 class Wall(Object):
@@ -16,7 +17,7 @@ class Wall(Object):
         self.window = window
         self.wallParts = []
         self.pos = pos
-        self.pieces = [SQUARE, L_RIGHT, L_LEFT, T, STRAIGHT_LINE, HORIZONTAL_LINE]
+        self.pieces = [SQUARE, L_RIGHT, L_LEFT, T, VERTICAL, HORIZONTAL]
         self.initSprite()
         self.initWallPart()
     
@@ -25,23 +26,23 @@ class Wall(Object):
         self.image.fill((255, 255, 255))
     
     def initWallPart(self):
-
-        # self.wallParts.append(self.image.get_rect())
-        i = 6
-        while i > 0:        
+        i = 5
+        j = 0
+        while i >= 0:        
             r = randint(0, i)
-            self.wallParts.append(pygame.image.load(self.pieces[r]).convert())
+            self.wallParts.append(Piece(self.pieces[r], self.pos[j], self))
             self.pieces.pop(r)
             i -= 1
-
-        self.wallParts[0].move_ip(self.pos[0])
-        self.wallParts[1].move_ip(self.pos[1])
-        self.wallParts[2].move_ip(self.pos[2])
-        self.wallParts[3].move_ip(self.pos[3])
-        self.wallParts[4].move_ip(self.pos[4])
-        self.wallParts[5].move_ip(self.pos[5])
-
+            j += 1
+            
     def update(self, dt):
         for w in self.wallParts:
-            self.window.blit(self.image, w)
+            w.update(dt)
+    def eventManager(self, event):
+        # for w in self.wallParts:
+        #     if event
+        print("on m'appelle l'ovni")
+
+
+
 
