@@ -103,6 +103,7 @@ class Player(Object):
         self.core.window.blit(self.image, self.rect)
 
     def networkManager(self, datagram):
+        print("OKKKK")
         if datagram[1] == "0":
             self.velocity[0] = int(datagram[2:])
         if datagram[1] == "1":
