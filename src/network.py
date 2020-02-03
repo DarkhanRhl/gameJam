@@ -14,7 +14,7 @@ class Network(DatagramProtocol):
 
     def startProtocol(self):
         # print('START')
-        self.transport.connect('127.0.0.1', 8000)
+        self.transport.connect('192.168.43.143', 8000)
     
     def sendDatagram(self, datagram):
         # print('SEND')

@@ -73,10 +73,10 @@ class Core:
         self.objects = []
         self.objects.append(Player(Player.REAL, self.PLAYER1_NAME, self.PLAYER1_START_POS,
                                    self.PLAYER1_KEYS, self.PLAYER1_COLOR, self, self.network.sendDatagram))
-        self.objects.append(Player(Player.REAL, self.PLAYER2_NAME, self.PLAYER2_START_POS,
-                                   self.PLAYER2_KEYS, self.PLAYER2_COLOR, self, self.network.sendDatagram))
-        # self.objects.append(Player(Player.NETWORK, self.PLAYER2_NAME, self.PLAYER2_START_POS,
-        #                            None, self.PLAYER2_COLOR, self, None))
+        # self.objects.append(Player(Player.REAL, self.PLAYER2_NAME, self.PLAYER2_START_POS,
+        #                            self.PLAYER2_KEYS, self.PLAYER2_COLOR, self, self.network.sendDatagram))
+        self.objects.append(Player(Player.NETWORK, self.PLAYER2_NAME, self.PLAYER2_START_POS,
+                                   None, self.PLAYER2_COLOR, self, None))
         self.objects.append(Wall(self.window, self.POS_WALL_1))
         self.objects.append(Wall(self.window, self.POS_WALL_2))
 

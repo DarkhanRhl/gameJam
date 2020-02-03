@@ -34,14 +34,11 @@ class Wall(Object):
             self.pieces.pop(r)
             i -= 1
             j += 1
-            
+
     def update(self, dt):
         for w in self.wallParts:
             w.update(dt)
-    def eventManager(self, event):
-        # for w in self.wallParts:
-        #     if event
-        print("on m'appelle l'ovni")
+
 
 
 
