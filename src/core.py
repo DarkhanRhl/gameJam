@@ -1,12 +1,11 @@
 import os
 import random
-import time;
+import time
 import pygame
 from object import Object
 from player import Player
 from piece import Piece
 from wall import Wall
-from pieces import Pieces
 
 pygame.init()
 
@@ -44,21 +43,9 @@ class Core:
     PIECE_SPAWN_RANGE_X_PERCENT = 0.1
     PIECE_SPAWN_RANGE_Y_PERCENT = 0.45
 
-    # index des positions :
-    # 0 = square
-    # 1 = l droit
-    # 2 = l gauche
-    # 3 = t
-    # 4 = barre vertical
-    # 5 = barre horizontal
-
     POS_WALL_1 = [[0, 30], [0, 150], [0, 270], [0, 390], [0, 510], [0, 630]]
     POS_WALL_2 = [[1048, 30], [1048, 150], [1048, 270],
                   [1048, 390], [1048, 510], [1048, 630]]
-
-    #middle : 540|360
-    POS_PIECES = [[540, 310], [570, 330], [540, 360], [610, 360], [600, 360], [570, 390],
-                  [520, 310], [490, 330], [500, 360], [440, 360], [460, 360], [490, 390]]
 
     def __init__(self):
         random.seed(time.time())
@@ -75,14 +62,7 @@ class Core:
                                    self.PLAYER2_KEYS, self.PLAYER2_COLOR, self))
         # self.objects.append(Wall(self.window, self.POS_WALL_1))
         # self.objects.append(Wall(self.window, self.POS_WALL_2))
-
-        # self.objects.append(Pieces(self.window, self.POS_PIECES))
-        # self.objects.append(Piece("vertical", (200, 400), self))
-        # self.objects.append(Piece("horizontal", (300, 400), self))
-        # self.objects.append(Piece("square", (400, 400), self))
-        # self.objects.append(Piece("t-shape", (500, 400), self))
-        # self.objects.append(Piece("l-left", (600, 400), self))
-        # self.objects.append(Piece("l-right", (700, 400), self))
+        
         self.piecesName = []
         self.generatePieces()
 

@@ -29,10 +29,20 @@ class Player(Object):
         self.initSprite(pos)
 
     def initSprite(self, pos):
+        # self.image = pygame.image.load("assets/pieces/horizontal.png").convert_alpha()
+        # self.changeSpriteColor((255, 0, 0))
         self.image = pygame.Surface((50, 50))
         self.image.fill(self.color)
         self.rect = self.image.get_rect()
         self.rect.move_ip(*pos)
+
+    def changeSpriteColor(self, color):
+        w, h = self.image.get_size()
+        r, g, b = color
+        for x in range(w):
+            for y in range(h):
+                a = self.image.get_at((x, y))[3]
+                self.image.set_at((x, y), pygame.Color(r, g, b, a))
 
     def checkCollision(self, otherRect):
         return self.rect.colliderect(otherRect)
