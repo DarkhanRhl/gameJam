@@ -92,7 +92,7 @@ class Core:
 
     def networkManager(self, datagram):
         if (datagram[0] == '1'):
-            self.getObjectsByType(Player)[1]
+            self.getObjectsByType(Player)[1].networkManager(datagram)
 
     def generateRandomPiecePosition(self):
         x = random.randint(self.WINDOW_LENGTH / 2 - (self.WINDOW_LENGTH * self.PIECE_SPAWN_RANGE_X_PERCENT),
