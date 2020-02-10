@@ -159,16 +159,16 @@ class Player(Object):
     def checkDash(self):
         if self.dash != 0 and (self.velocity[0] > 0):
             self.dashFire = pygame.transform.rotate(self.originalDashFire, 0)
-            self.core.window.blit(self.dashFire, [self.rect.x - 130, self.rect.y - 15])
+            self.core.window.blit(self.dashFire, [self.rect.x - 130, self.rect.y - 5])
         if self.dash != 0 and (self.velocity[0] < 0):
             self.dashFire = pygame.transform.rotate(self.originalDashFire, 180)
-            self.core.window.blit(self.dashFire, [self.rect.x, self.rect.y - 25])
+            self.core.window.blit(self.dashFire, [self.rect.x + 22, self.rect.y - 16])
         if self.dash != 0 and (self.velocity[1] < 0):
             self.dashFire = pygame.transform.rotate(self.originalDashFire, 90)
-            self.core.window.blit(self.dashFire, [self.rect.x - 17, self.rect.y - 25])
+            self.core.window.blit(self.dashFire, [self.rect.x + 10, self.rect.y + 10])
         if self.dash != 0 and (self.velocity[1] > 0):
             self.dashFire = pygame.transform.rotate(self.originalDashFire, 270)
-            self.core.window.blit(self.dashFire, [self.rect.x - 28, self.rect.y - 130])
+            self.core.window.blit(self.dashFire, [self.rect.x, self.rect.y - 130])
 
     def eventManager(self, event):
         if event.type == pygame.KEYDOWN:
