@@ -19,21 +19,21 @@ class Core:
     PLAYER1_START_POS = (WINDOW_LENGTH / 2 - 100, WINDOW_HEIGHT / 2)
     PLAYER1_COLOR = (0, 0, 255)
     PLAYER1_KEYS = {
-        "up": pygame.K_UP,
-        "down": pygame.K_DOWN,
-        "left": pygame.K_LEFT,
-        "right": pygame.K_RIGHT,
-        "action": pygame.K_RETURN
-    }
-
-    PLAYER2_NAME = "Red"
-    PLAYER2_START_POS = (WINDOW_LENGTH / 2 + 100, WINDOW_HEIGHT / 2)
-    PLAYER2_KEYS = {
         "up": pygame.K_w,
         "down": pygame.K_s,
         "left": pygame.K_a,
         "right": pygame.K_d,
         "action": pygame.K_SPACE
+    }
+
+    PLAYER2_NAME = "Red"
+    PLAYER2_START_POS = (WINDOW_LENGTH / 2 + 100, WINDOW_HEIGHT / 2)
+    PLAYER2_KEYS = {
+        "up": pygame.K_UP,
+        "down": pygame.K_DOWN,
+        "left": pygame.K_LEFT,
+        "right": pygame.K_RIGHT,
+        "action": pygame.K_RETURN
     }
     PLAYER2_COLOR = (255, 0, 0)
 
@@ -50,20 +50,10 @@ class Core:
             (self.WINDOW_LENGTH, self.WINDOW_HEIGHT))
         self.clock = pygame.time.Clock()
         self.running = True
-        
-        # NETWORK
-        # self.network = Network(self.networkManager)
 
         self.piecesName = []
         self.objects = []
 
-        # NETWORK
-        # self.objects.append(Player(Player.REAL, self.PLAYER1_NAME, self.PLAYER1_START_POS,
-        #                            self.PLAYER1_KEYS, self.PLAYER1_COLOR, self, self.network.sendDatagram))
-        # self.objects.append(Player(Player.NETWORK, self.PLAYER2_NAME, self.PLAYER2_START_POS,
-        #                            None, self.PLAYER2_COLOR, self, None))
-
-        # LOCAL
         self.objects.append(Player(self.PLAYER1_NAME, self.PLAYER1_START_POS,
                                    self.PLAYER1_KEYS, self.PLAYER1_COLOR, self))
         self.objects.append(Player(self.PLAYER2_NAME, self.PLAYER2_START_POS,

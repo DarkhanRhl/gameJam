@@ -8,10 +8,6 @@ from wall import Wall
 
 
 class Player(Object):
-    IA = "IA"
-    NETWORK = "NETWORK"
-    REAL = "REAL"
-
     SPEED = 300
     SPEED_HOLDING_PERCENT = 0.85
 
@@ -22,20 +18,13 @@ class Player(Object):
     STUNT_DURATION = 1.5
     STUNT_FADE_INTENSITY = 150
 
-    # NETWORK
-    # def __init__(self, playerType, name, pos, keys, color, core, sendDataFunc):
-    
-    # LOCAL
+    ANIM_URL_PREFIX = "assets/player/character-"
+    ANIM_URL_SUFFIX = ".png"
+    ANIM_SPEED = 0.05
+
     def __init__(self, name, pos, keys, color, core):
         self.name = name
 
-        # NETWORK
-        # self.playerType = playerType
-        # if (playerType == self.REAL):
-        #     self.keys = keys
-        #     self.sendDataFunc = sendDataFunc
-
-        # LOCAL
         self.keys = keys
 
         self.color = color
@@ -45,14 +34,17 @@ class Player(Object):
         self.hold = None
         self.stunt = 0
         self.dash = 0
+        self.anim = 0
+        self.animElapsed = 0
 
         self.initSprite(pos)
 
     def initSprite(self, pos):
-        # self.image = pygame.image.load("assets/pieces/horizontal.png").convert_alpha()
-        # self.changeSpriteColor((255, 0, 0))
-        self.image = pygame.Surface((50, 50))
-        self.image.fill(self.color)
+        self.image = pygame.image.load(
+            self.ANIM_URL_PREFIX + str(self.anim) + self.ANIM_URL_SUFFIX).convert_alpha()
+        utils.changeSpriteColor(self.image, self.color)
+        # self.image = pygame.Surface((50, 50))
+        # self.image.fill(self.color)
         self.rect = self.image.get_rect()
         self.rect.move_ip(*pos)
 
@@ -113,17 +105,33 @@ class Player(Object):
     def setStuntColor(self):
         fade = self.stunt * (self.STUNT_FADE_INTENSITY / self.STUNT_DURATION)
         newColor = (
-            0 if self.color[0] == 0 else fade,
-            0 if self.color[1] == 0 else fade,
-            0 if self.color[2] == 0 else fade)
-        self.image.fill(tuple(map(operator.sub, self.color, newColor)))
+            0 if self.color[0] == 0 else int(fade),
+            0 if self.color[1] == 0 else int(fade),
+            0 if self.color[2] == 0 else int(fade))
+        utils.changeSpriteColor(self.image, tuple(
+            map(operator.sub, self.color, newColor)))
 
     def checkIfMove(self, move):
         if (not self.checkWallCollision(self.rect)) or (self.checkWallCollision(self.rect) and not self.checkWallCollision(self.rect.move(*move))) or (self.rect.x == self.rect.x + move[0]):
             return True
         return False
 
+    def updateAnim(self, dt):
+        if self.velocity[0] != 0 or self.velocity[1] != 0:
+            self.animElapsed -= dt
+            if self.animElapsed <= 0:
+                self.anim = (self.anim + 1) % 2
+                self.animElapsed = self.ANIM_SPEED
+        else:
+            self.anim = 0
+            self.animElapsed = self.ANIM_SPEED
+
+        url = self.ANIM_URL_PREFIX + ("hold-" if self.hold else "") + str(self.anim) + self.ANIM_URL_SUFFIX
+        self.image = pygame.image.load(url).convert_alpha()
+
     def update(self, dt):
+        self.updateAnim(dt)
+
         if self.stunt == 0:
             speed = self.SPEED * self.SPEED_HOLDING_PERCENT if self.hold else self.SPEED
             speed += self.dash if self.dash > 0 else 0
@@ -132,6 +140,7 @@ class Player(Object):
             if self.checkIfMove(move):
                 self.rect.move_ip(*move)
             self.dash -= self.DASH_SPEED_BONUS * (dt / self.DASH_DURATION)
+            utils.changeSpriteColor(self.image, self.color)
         else:
             self.stunt -= self.stunt if dt > self.stunt else dt
             self.setStuntColor()
@@ -142,45 +151,24 @@ class Player(Object):
 
         self.core.window.blit(self.image, self.rect)
 
-    def networkManager(self, datagram):
-        print("OKKKK")
-        if datagram[1] == "0":
-            self.velocity[0] = int(datagram[2:])
-        if datagram[1] == "1":
-            self.velocity[1] = int(datagram[2:])
-        if datagram[1] == "2" and self.stunt == 0:
-            self.checkAction()
-
     def eventManager(self, event):
-        # NETWORK
-        # if (self.playerType != self.REAL):
-        #     return
         if event.type == pygame.KEYDOWN:
             if event.key == self.keys["left"]:
                 self.velocity[0] += -1
-                # self.sendDataFunc("10" + str(self.velocity[0]))
             if event.key == self.keys["right"]:
                 self.velocity[0] += 1
-                # self.sendDataFunc("10" + str(self.velocity[0]))
             if event.key == self.keys["up"]:
                 self.velocity[1] += -1
-                # self.sendDataFunc("11" + str(self.velocity[1]))
             if event.key == self.keys["down"]:
                 self.velocity[1] += 1
-                # self.sendDataFunc("11" + str(self.velocity[1]))
             if event.key == self.keys["action"] and self.stunt == 0:
                 self.checkAction()
-                # self.sendDataFunc("12")
         if event.type == pygame.KEYUP:
             if event.key == self.keys["left"]:
                 self.velocity[0] -= -1
-                # self.sendDataFunc("10" + str(self.velocity[0]))
             if event.key == self.keys["right"]:
                 self.velocity[0] -= 1
-                # self.sendDataFunc("10" + str(self.velocity[0]))
             if event.key == self.keys["up"]:
                 self.velocity[1] -= -1
-                # self.sendDataFunc("11" + str(self.velocity[1]))
             if event.key == self.keys["down"]:
                 self.velocity[1] -= 1
-                # self.sendDataFunc("11" + str(self.velocity[1]))
