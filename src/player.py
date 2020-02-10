@@ -110,7 +110,8 @@ class Player(Object):
             map(operator.sub, self.color, newColor)))
 
     def checkIfMove(self, move):
-        if (not self.checkWallCollision(self.rect)) or (self.checkWallCollision(self.rect) and not self.checkWallCollision(self.rect.move(*move))) or (self.rect.x == self.rect.x + move[0]):
+        if ((not self.checkWallCollision(self.rect)) or (self.checkWallCollision(self.rect) and not self.checkWallCollision(self.rect.move(*move))) or (self.rect.x == self.rect.x + move[0])) \
+            and (self.rect.move(*move).top >= 0 and self.rect.move(*move).bottom <= self.core.WINDOW_HEIGHT):
             return True
         return False
 
@@ -147,8 +148,10 @@ class Player(Object):
             self.setStuntColor()
 
         if self.hold:
-            self.hold.rect = self.rect.copy()
-            self.hold.rect.bottom -= 15
+            self.hold.rect.x = self.rect.copy().x
+            self.hold.rect.y = self.rect.copy().y
+            self.hold.rect.x += 28
+            self.hold.rect.y -= 25
 
         self.checkDash()
         self.core.window.blit(self.image, self.rect)

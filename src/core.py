@@ -28,6 +28,7 @@ class Core:
 
     PLAYER2_NAME = "Red"
     PLAYER2_START_POS = (WINDOW_LENGTH / 2 + 100, WINDOW_HEIGHT / 2)
+    PLAYER2_COLOR = (255, 0, 0)
     PLAYER2_KEYS = {
         "up": pygame.K_UP,
         "down": pygame.K_DOWN,
@@ -35,7 +36,6 @@ class Core:
         "right": pygame.K_RIGHT,
         "action": pygame.K_RETURN
     }
-    PLAYER2_COLOR = (255, 0, 0)
 
     NUMBER_WALL_HOLE = 6
     NUMBER_PIECES = 40
@@ -46,9 +46,11 @@ class Core:
     NETWORK_GAME = False
 
     def __init__(self):
-        # random.seed(time.time())
+        random.seed(time.time())
         random.seed(123)
         pygame.init()
+        pygame.font.init()
+        self.font = pygame.font.SysFont('Comic Sans MS', 200)
         self.window = pygame.display.set_mode(
             (self.WINDOW_LENGTH, self.WINDOW_HEIGHT))
         self.clock = pygame.time.Clock()
@@ -93,6 +95,19 @@ class Core:
             self.objects.append(
                 Piece(name, self.generateRandomPiecePosition(), self))
 
+    def checkWinCondition(self):
+        walls = self.getObjectsByType(Wall)
+        for wall in walls:
+            if wall.checkIfComplete() == True:
+                if wall.side == "LEFT":
+                    text = "BLUE WIN !!!"
+                    color = self.PLAYER1_COLOR
+                else:
+                    text = "RED WIN !!!"
+                    color = self.PLAYER2_COLOR
+                textsurface = self.font.render(text, False, color)
+                self.window.blit(textsurface, (self.WINDOW_LENGTH / 2 - 400, self.WINDOW_HEIGHT / 2 - 50))
+
     def eventManager(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -103,6 +118,7 @@ class Core:
     def update(self, dt):
         for object_ in self.objects:
             object_.update(dt)
+        self.checkWinCondition()
 
     def getObjectsByType(self, type_):
         response = []

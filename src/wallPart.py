@@ -8,6 +8,7 @@ class WallPart(Object):
     def __init__(self, name, rect, core):
         self.name = name
         self.core = core
+        self.isSet = False
 
         self.initSprite(rect)
 
@@ -27,6 +28,7 @@ class WallPart(Object):
     def checkPutPiece(self, pieceName):
         if pieceName == self.name:
             utils.changeSpriteColor(self.imagePiece, (255, 255, 255))
+            self.isSet = True
             return True
         return False
 
