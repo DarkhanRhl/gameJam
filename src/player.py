@@ -13,7 +13,6 @@ class Player(Object):
 
     SPEED = 300
     SPEED_HOLDING_PERCENT = 0.85
-
     DASH_DURATION = 0.3
     DASH_SPEED_BONUS = 500
     DASH_COOLDOWN = 2
@@ -28,7 +27,9 @@ class Player(Object):
     # def __init__(self, name, pos, keys, color, core):
         self.name = name
         self.networkGame = True if sendDataFunc else False
-
+        self.originalDashFire = pygame.image.load("assets/particles/blue-fire.png").convert_alpha()
+        self.dashFire = self.originalDashFire
+        self.angle = 0
         # NETWORK
         self.playerType = playerType
         if (playerType == self.REAL):
@@ -109,6 +110,7 @@ class Player(Object):
             willDash = False
         if willDash and not self.hold:
             self.dash = self.DASH_SPEED_BONUS
+            
 
     def setStuntColor(self):
         fade = self.stunt * (self.STUNT_FADE_INTENSITY / self.STUNT_DURATION)
@@ -131,7 +133,10 @@ class Player(Object):
 
             if self.checkIfMove(move):
                 self.rect.move_ip(*move)
-            self.dash -= self.DASH_SPEED_BONUS * (dt / self.DASH_DURATION)
+            if self.dash > 0:
+                self.dash -= self.DASH_SPEED_BONUS * (dt / self.DASH_DURATION)
+            if self.dash < 0:
+                self.dash = 0
         else:
             self.stunt -= self.stunt if dt > self.stunt else dt
             self.setStuntColor()
@@ -140,7 +145,22 @@ class Player(Object):
             self.hold.rect = self.rect.copy()
             self.hold.rect.bottom -= 15
 
+        self.checkDash()
         self.core.window.blit(self.image, self.rect)
+
+    def checkDash(self):
+        if self.dash != 0 and (self.velocity[0] > 0):
+            self.dashFire = pygame.transform.rotate(self.originalDashFire, 0)
+            self.core.window.blit(self.dashFire, [self.rect.x - 130, self.rect.y - 15])
+        if self.dash != 0 and (self.velocity[0] < 0):
+            self.dashFire = pygame.transform.rotate(self.originalDashFire, 180)
+            self.core.window.blit(self.dashFire, [self.rect.x, self.rect.y - 25])
+        if self.dash != 0 and (self.velocity[1] < 0):
+            self.dashFire = pygame.transform.rotate(self.originalDashFire, 90)
+            self.core.window.blit(self.dashFire, [self.rect.x - 17, self.rect.y - 25])
+        if self.dash != 0 and (self.velocity[1] > 0):
+            self.dashFire = pygame.transform.rotate(self.originalDashFire, 270)
+            self.core.window.blit(self.dashFire, [self.rect.x - 28, self.rect.y - 130])
 
     def networkManager(self, datagram):
         if datagram[0] == "1":

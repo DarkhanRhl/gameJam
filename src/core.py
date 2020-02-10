@@ -58,7 +58,7 @@ class Core:
         
         self.objects = []
         # NETWORK
-        self.NETWORK_GAME = True
+        # self.NETWORK_GAME = True
         if (self.NETWORK_GAME == True):
             self.gameStarted = False
             self.network = Network(self.networkManager)
