@@ -2,6 +2,7 @@ import os
 import random
 import time
 import pygame
+import sys
 
 from object import Object
 from player import Player
@@ -56,7 +57,7 @@ class Core:
         
         self.objects = []
         # NETWORK
-        # self.NETWORK_GAME = True
+        self.NETWORK_GAME = True
         if (self.NETWORK_GAME == True):
             self.network = Network(self.networkManager)
             self.objects.append(Player(Player.REAL, self.PLAYER1_NAME, self.PLAYER1_START_POS,
@@ -78,8 +79,10 @@ class Core:
 
 
     def networkManager(self, datagram):
-        if (datagram[0] == '1'):
+        if (datagram[0] == '1' or datagram[0] == '2'):
             self.getObjectsByType(Player)[1].networkManager(datagram)
+        if (datagram[0] == '0'):
+            sys.exit()
 
     def generateRandomPiecePosition(self):
         x = random.randint(self.WINDOW_LENGTH / 2 - (self.WINDOW_LENGTH * self.PIECE_SPAWN_RANGE_X_PERCENT),
@@ -135,3 +138,4 @@ class Core:
                 self.sendPosition()
 
             pygame.display.flip()
+        self.network.sendDatagram("0")
