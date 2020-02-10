@@ -27,6 +27,7 @@ class Player(Object):
     # LOCAL
     # def __init__(self, name, pos, keys, color, core):
         self.name = name
+        self.networkGame = True if sendDataFunc else False
 
         # NETWORK
         self.playerType = playerType
@@ -165,7 +166,8 @@ class Player(Object):
             if event.key == self.keys["down"]:
                 self.velocity[1] += 1
             if event.key == self.keys["action"] and self.stunt == 0:
-                self.sendDataFunc("2")
+                if (self.networkGame):
+                    self.sendDataFunc("2")
                 self.checkAction()
         if event.type == pygame.KEYUP:
             if event.key == self.keys["left"]:
