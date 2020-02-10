@@ -54,11 +54,13 @@ class Core:
             (self.WINDOW_LENGTH, self.WINDOW_HEIGHT))
         self.clock = pygame.time.Clock()
         self.running = True
+        self.gameStarted = True
         
         self.objects = []
         # NETWORK
         self.NETWORK_GAME = True
         if (self.NETWORK_GAME == True):
+            self.gameStarted = False
             self.network = Network(self.networkManager)
             self.objects.append(Player(Player.REAL, self.PLAYER1_NAME, self.PLAYER1_START_POS,
                                 self.PLAYER1_KEYS, self.PLAYER1_COLOR, self, self.network.sendDatagram))
@@ -128,6 +130,10 @@ class Core:
     def gameloop(self):
         sound = pygame.mixer.Sound("assets/sound/flute.wav")
         sound.play(loops=-1, maxtime=0, fade_ms=0)
+        if (self.gameStarted == False):
+            self.update(0)
+            time.sleep(3)
+            self.gameStarted = True
         while self.running:
             dt = self.clock.tick(self.FPS) / 1000
             self.window.fill((0, 0, 0))
