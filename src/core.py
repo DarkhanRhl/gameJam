@@ -7,7 +7,7 @@ from object import Object
 from player import Player
 from piece import Piece
 from wall import Wall
-# from network import Network
+from network import Network
 
 
 class Core:
@@ -43,32 +43,33 @@ class Core:
     PIECE_SPAWN_RANGE_X_PERCENT = 0.1
     PIECE_SPAWN_RANGE_Y_PERCENT = 0.45
 
+    NETWORK_GAME = False
+
     def __init__(self):
-        random.seed(time.time())
+        # random.seed(time.time())
+        random.seed(123)
         pygame.init()
         self.window = pygame.display.set_mode(
             (self.WINDOW_LENGTH, self.WINDOW_HEIGHT))
         self.clock = pygame.time.Clock()
         self.running = True
         
-        # NETWORK
-        # self.network = Network(self.networkManager)
-
-        self.piecesName = []
         self.objects = []
-
         # NETWORK
-        # self.objects.append(Player(Player.REAL, self.PLAYER1_NAME, self.PLAYER1_START_POS,
-        #                            self.PLAYER1_KEYS, self.PLAYER1_COLOR, self, self.network.sendDatagram))
-        # self.objects.append(Player(Player.NETWORK, self.PLAYER2_NAME, self.PLAYER2_START_POS,
-        #                            None, self.PLAYER2_COLOR, self, None))
-
+        # self.NETWORK_GAME = True
+        if (self.NETWORK_GAME == True):
+            self.network = Network(self.networkManager)
+            self.objects.append(Player(Player.REAL, self.PLAYER1_NAME, self.PLAYER1_START_POS,
+                                self.PLAYER1_KEYS, self.PLAYER1_COLOR, self, self.network.sendDatagram))
+            self.objects.append(Player(Player.NETWORK, self.PLAYER2_NAME, self.PLAYER2_START_POS,
+                                None, self.PLAYER2_COLOR, self, None))
         # LOCAL
-        self.objects.append(Player(self.PLAYER1_NAME, self.PLAYER1_START_POS,
-                                   self.PLAYER1_KEYS, self.PLAYER1_COLOR, self))
-        self.objects.append(Player(self.PLAYER2_NAME, self.PLAYER2_START_POS,
-                                   self.PLAYER2_KEYS, self.PLAYER2_COLOR, self))
-        
+        else:
+            self.objects.append(Player(Player.REAL, self.PLAYER1_NAME, self.PLAYER1_START_POS,
+                                self.PLAYER1_KEYS, self.PLAYER1_COLOR, self, None))
+            self.objects.append(Player(Player.REAL, self.PLAYER2_NAME, self.PLAYER2_START_POS,
+                                self.PLAYER2_KEYS, self.PLAYER2_COLOR, self, None))
+
         self.piecesName = []
         self.generatePieces()
         
@@ -109,6 +110,10 @@ class Core:
         for object_ in self.objects:
             object_.update(dt)
 
+    def sendPosition(self):
+        x,y = self.getObjectsByType(Player)[0].getPosition()
+        self.network.sendDatagram("1" + str(x) + "," + str(y))
+
     def getObjectsByType(self, type_):
         response = []
 
@@ -126,5 +131,7 @@ class Core:
 
             self.eventManager()
             self.update(dt)
+            if (self.NETWORK_GAME == True):
+                self.sendPosition()
 
             pygame.display.flip()
