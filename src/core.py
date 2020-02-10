@@ -2,12 +2,12 @@ import os
 import random
 import time
 import pygame
+import sys
 
 from object import Object
 from player import Player
 from piece import Piece
 from wall import Wall
-# from network import Network
 
 
 class Core:
@@ -43,8 +43,11 @@ class Core:
     PIECE_SPAWN_RANGE_X_PERCENT = 0.1
     PIECE_SPAWN_RANGE_Y_PERCENT = 0.45
 
+    NETWORK_GAME = False
+
     def __init__(self):
-        random.seed(time.time())
+        # random.seed(time.time())
+        random.seed(123)
         pygame.init()
         self.window = pygame.display.set_mode(
             (self.WINDOW_LENGTH, self.WINDOW_HEIGHT))
@@ -67,8 +70,10 @@ class Core:
 
 
     def networkManager(self, datagram):
-        if (datagram[0] == '1'):
+        if (datagram[0] == '1' or datagram[0] == '2'):
             self.getObjectsByType(Player)[1].networkManager(datagram)
+        if (datagram[0] == '0'):
+            sys.exit()
 
     def generateRandomPiecePosition(self):
         x = random.randint(self.WINDOW_LENGTH / 2 - (self.WINDOW_LENGTH * self.PIECE_SPAWN_RANGE_X_PERCENT),
