@@ -8,7 +8,6 @@ class WallPart(Object):
     def __init__(self, name, rect, core):
         self.name = name
         self.core = core
-
         self.initSprite(rect)
 
     def initSprite(self, rect):
