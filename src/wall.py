@@ -1,45 +1,29 @@
 import pygame
+from random import randint
+
 from piece import Piece
 from object import Object
-from random import *
-
-
-SQUARE = "square"
-L_RIGHT = "l-right"
-L_LEFT = "l-left"
-T = "t-shape"
-VERTICAL = "vertical"
-HORIZONTAL = "horizontal"
+from wallPart import WallPart
 
 
 class Wall(Object):
-    def __init__(self, window, pos):
-        self.window = window
+    PART_LENGTH = 75
+
+    def __init__(self, side, piecesName, core):
+        self.core = core
+
         self.wallParts = []
-        self.pos = pos
-        self.pieces = [SQUARE, L_RIGHT, L_LEFT, T, VERTICAL, HORIZONTAL]
-        self.initSprite()
-        self.initWallPart()
-    
-    def initSprite(self):
-        self.image = pygame.Surface((32, 32))
-        self.image.fill((255, 255, 255))
-    
-    def initWallPart(self):
-        i = 5
-        j = 0
-        while i >= 0:        
-            r = randint(0, i)
-            self.wallParts.append(Piece(self.pieces[r], self.pos[j], self))
-            self.pieces.pop(r)
-            i -= 1
-            j += 1
+        self.initWallPart(side, piecesName)
+
+    def initWallPart(self, side, piecesName):
+        partHeight = self.core.WINDOW_HEIGHT / len(piecesName)
+        for index, piece in enumerate(piecesName):
+            partPos = (0 if side == "LEFT" else self.core.WINDOW_LENGTH - self.PART_LENGTH,
+                       partHeight * index)
+            partSize = (self.PART_LENGTH, partHeight)
+            pieceRect = pygame.Rect(partPos, partSize)
+            self.wallParts.append(WallPart(piece, pieceRect, self.core))
 
     def update(self, dt):
-        for w in self.wallParts:
-            w.update(dt)
-
-
-
-
-
+        for part in self.wallParts:
+            part.update(dt)

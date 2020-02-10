@@ -8,8 +8,7 @@ class Piece(Object):
         self.initSprite(pos)
 
     def initSprite(self, pos):
-        print(self.name)
-        self.image = pygame.image.load("assets/pieces/" + self.name + ".png").convert()
+        self.image = pygame.image.load("assets/pieces/" + self.name + ".png").convert_alpha()
         self.rect = self.image.get_rect()
         self.rect.move_ip(*pos)
 

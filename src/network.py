@@ -5,7 +5,6 @@ from threading import Thread
 class Network(DatagramProtocol):  
 
     def __init__(self, callback):
-        # print('INIT')
         reactor.listenUDP(8000, self)
         thread = Thread(target=reactor.run, args=(False,))
         thread.daemon = True
@@ -13,13 +12,10 @@ class Network(DatagramProtocol):
         self.callback = callback
 
     def startProtocol(self):
-        # print('START')
         self.transport.connect('192.168.43.202', 8000)
     
     def sendDatagram(self, datagram):
-        # print('SEND')
         self.transport.write(datagram.encode())
 
     def datagramReceived(self, datagram, host):
-        # print('RECEIVE')
         self.callback(datagram.decode())
